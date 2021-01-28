@@ -20,7 +20,6 @@ let road = {x: 0, y: 30, w: 500, h: 700, img: roadImg}
 let car = new Image()
 car.src = './images/car.png'
 
-
 class Car {
   constructor(x, y, w, h, img) {
     this.x = x
@@ -35,48 +34,54 @@ class Car {
 }
 let honda = new Car(60, 450, 100, 150, car)
 
+
+//get random roadblocks
 let blocksRandom = [
   {x: 50, y: 0, w: 150, h: 50},
   {x: 50, y: 0, w: 200, h: 50},
   {x: 50, y: 0, w: 250, h: 50},
-  {x: 50, y: 0, w: 150, h: 50},
-  {x: 50, y: 0, w: 200, h: 50},
-  {x: 50, y: 0, w: 250, h: 50}
+  {x: 250, y: 0, w: 150, h: 50},
+  {x: 250, y: 0, w: 200, h: 50},
+  {x: 250, y: 0, w: 250, h: 50}
 ]
 function blockArray(blocks) {
   let ranBloc = blocks[Math.floor(Math.random() * blocks.length)]
   return ranBloc
 }
-
-// let r = blocksRandom[Math.floor(Math.random() * blocksRandom.length)]
-let blockJam = []
-
-
-// function dropBlocks(r) {
-//   ctx.fillRect(r.x, r.y += 2, r.w, r.h)
-// }
 class RoadBlock {
-  constructor(b) {
-    this.b = b
+  constructor() {
+    this.x = 50 + Math.floor(Math.random() * 151)
+    this.y = 0
+    this.w = 150 + Math.floor(Math.random() * 101)
+    this.h = 50
   }
-  dropBlocks(b) {
-    this.b.y += 2
-    //ctx.fillRect(this.b.x, this.b.y += 2, this.b.w, this.b.h)
-  }
-}
-
-let tester = {x: 0, y: 10, w: 100, h: 100}
-let testArray = [tester]
-
-function drawBarrier() {
-  for(let i = 0; i < testArray.length; i++) {
-    ctx.fillRect(testArray[i].x, testArray[i].y, testArray[i].w, testArray[i].h,)
-    testArray[i].y += 5;
+  createRect() {
+    ctx.fillRect(this.x, this.y += 6, this.w, this.h)
   }
 }
+let b = new RoadBlock()
+
+let blocksWow = []
+setInterval(() => {
+  let block = new RoadBlock()
+  blocksWow.push(block)
+  console.log(block)
+}, 2000)
+
+// barrier collision
+// function collisionDetection(rect1, rect2) {
+//   if (rect1.x < rect2.x + rect2.w &&
+//       rect1.x + rect1.w > rect2.x &&
+//       rect1.y < rect2.y + rect2.h &&
+//       rect1.y + rect1.h > rect2.y) {
+//       // collision detected!
+//       console.log('collision!!!')
+//       cancelAnimationFrame(interval)
+//   }
+// }
+// animate counters
 let counter = 0
 let pushed = false
-
 // animate your stuff
 function animate() {
   let gameLoop = requestAnimationFrame(animate)
@@ -84,13 +89,12 @@ function animate() {
 
   ctx.drawImage(roadImg, road.x, road.y, road.w, road.h)
   honda.draw()
-  counter++
-  if (counter % 190 === 0) {
-    let variablez = blockArray(blocksRandom)
-    testArray.push({...variablez})
-    pushed = true
+  for (block of blocksWow) {
+    block.createRect()
   }
-  drawBarrier()
+  // for (square of evilSquares) {
+  //   collisionDetection(chicken, square)
+// }
 }
 animate()
 
@@ -101,26 +105,26 @@ window.onkeydown = function(e) {
     switch (e.key) {    
       case "ArrowLeft":
         if (honda.x != 0)
-          honda.x -= 30;
+          honda.x -= 40;
         else 
           return
         break
       case "ArrowRight":
-        if (honda.x + honda.w + 30 < canvas.width)
-          honda.x += 30;
+        if (honda.x + honda.w + 40 < canvas.width)
+          honda.x += 40;
         else {
           return;
         }
         break;
       case "ArrowUp":
-        if (honda.y - 30 != 0)
-          honda.y -= 30;
+        if (honda.y - 40 != 0)
+          honda.y -= 40;
         else
           return
         break
       case "ArrowDown":
-        if (honda.y + honda.h + 30  < canvas.height)
-          honda.y += 30;
+        if (honda.y + honda.h + 40  < canvas.height)
+          honda.y += 40;
         else
           return
         break;
