@@ -1,17 +1,8 @@
-// window.onload = () => {
-//   document.getElementById('start-button').onclick = () => {
-//     startGame();
-//   };
-
-//   function startGame() {}
-// };
-
 let canvas = document.querySelector('canvas')
-let ctx = canvas.getContext('2d')
-
 canvas.width = width="500"
 canvas.height = height="700"
 
+let ctx = canvas.getContext('2d')
 // x y w h
 let roadImg = new Image()
 roadImg.src = './images/road.png'
@@ -34,20 +25,6 @@ class Car {
 }
 let honda = new Car(60, 450, 100, 150, car)
 
-
-//get random roadblocks
-let blocksRandom = [
-  {x: 50, y: 0, w: 150, h: 50},
-  {x: 50, y: 0, w: 200, h: 50},
-  {x: 50, y: 0, w: 250, h: 50},
-  {x: 250, y: 0, w: 150, h: 50},
-  {x: 250, y: 0, w: 200, h: 50},
-  {x: 250, y: 0, w: 250, h: 50}
-]
-function blockArray(blocks) {
-  let ranBloc = blocks[Math.floor(Math.random() * blocks.length)]
-  return ranBloc
-}
 class RoadBlock {
   constructor() {
     this.x = 50 + Math.floor(Math.random() * 151)
@@ -65,26 +42,28 @@ let blocksWow = []
 setInterval(() => {
   let block = new RoadBlock()
   blocksWow.push(block)
-  console.log(block)
 }, 2000)
 
 // barrier collision
-// function collisionDetection(rect1, rect2) {
-//   if (rect1.x < rect2.x + rect2.w &&
-//       rect1.x + rect1.w > rect2.x &&
-//       rect1.y < rect2.y + rect2.h &&
-//       rect1.y + rect1.h > rect2.y) {
-//       // collision detected!
-//       console.log('collision!!!')
-//       cancelAnimationFrame(interval)
-//   }
-// }
+function collisionDetection(rect1, rect2) {
+  if (rect1.x < rect2.x + rect2.w &&
+      rect1.x + rect1.w > rect2.x &&
+      rect1.y < rect2.y + rect2.h &&
+      rect1.y + rect1.h > rect2.y) {
+      // collision detected!
+      console.log('collision!!!')
+      cancelAnimationFrame(gameLoop)
+  }
+}
+
 // animate counters
 let counter = 0
 let pushed = false
+let gameLoop;
 // animate your stuff
+
 function animate() {
-  let gameLoop = requestAnimationFrame(animate)
+  gameLoop = requestAnimationFrame(animate)
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   ctx.drawImage(roadImg, road.x, road.y, road.w, road.h)
@@ -92,9 +71,9 @@ function animate() {
   for (block of blocksWow) {
     block.createRect()
   }
-  // for (square of evilSquares) {
-  //   collisionDetection(chicken, square)
-// }
+  for (block of blocksWow) {
+    collisionDetection(honda, block)
+}
 }
 animate()
 
@@ -104,7 +83,7 @@ window.onkeydown = function(e) {
   console.log(e.key)
     switch (e.key) {    
       case "ArrowLeft":
-        if (honda.x != 0)
+        if (honda.x - 20 > 0)
           honda.x -= 40;
         else 
           return
