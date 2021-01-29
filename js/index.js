@@ -1,6 +1,6 @@
 let canvas = document.querySelector('canvas')
 canvas.width = width="500"
-canvas.height = height="700"
+canvas.height = height="650"
 
 let ctx = canvas.getContext('2d')
 // x y w h
@@ -36,7 +36,6 @@ class RoadBlock {
     ctx.fillRect(this.x, this.y += 6, this.w, this.h)
   }
 }
-let b = new RoadBlock()
 
 let blocksWow = []
 setInterval(() => {
@@ -45,15 +44,35 @@ setInterval(() => {
 }, 2000)
 
 // barrier collision
+let collision = true;
 function collisionDetection(rect1, rect2) {
   if (rect1.x < rect2.x + rect2.w &&
-      rect1.x + rect1.w > rect2.x &&
+      rect1.x + rect1.w - 5 > rect2.x &&
       rect1.y < rect2.y + rect2.h &&
       rect1.y + rect1.h > rect2.y) {
       // collision detected!
       console.log('collision!!!')
       cancelAnimationFrame(gameLoop)
+      collision = false;
   }
+}
+function drawScore() {
+  ctx.font = "25px Arial";
+  ctx.fillStyle = "green";
+  ctx.fillText("Score: "+score, 8, 20);
+}
+
+function motivation() {
+  ctx.font = "25px Arial";
+  ctx.fillStyle = "green";
+  if (collision == true){
+    ctx.fillText("Keep It Up!", 185, 20)
+  }
+  else if (collision == false) {
+    ctx.fillStyle = "red"
+    ctx.fillText("LOSER!", 185, 20)
+  }
+
 }
 
 // animate counters
@@ -61,19 +80,28 @@ let counter = 0
 let pushed = false
 let gameLoop;
 // animate your stuff
-
+let score = 0
+console.log(typeof score)
 function animate() {
   gameLoop = requestAnimationFrame(animate)
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   ctx.drawImage(roadImg, road.x, road.y, road.w, road.h)
   honda.draw()
+  console.log(honda)
+  drawScore()
+  
   for (block of blocksWow) {
     block.createRect()
   }
   for (block of blocksWow) {
     collisionDetection(honda, block)
-}
+    motivation()
+    if (block.y > 650) {
+      score += 1;
+    }
+
+  }
 }
 animate()
 
@@ -89,7 +117,7 @@ window.onkeydown = function(e) {
           return
         break
       case "ArrowRight":
-        if (honda.x + honda.w + 40 < canvas.width)
+        if (honda.x + honda.w + 20 < canvas.width)
           honda.x += 40;
         else {
           return;
@@ -106,6 +134,13 @@ window.onkeydown = function(e) {
           honda.y += 40;
         else
           return
+        break;
+      case " ":
+        if (honda.x + honda.w + 80 < canvas.width)
+          honda.x += 80;
+        else {
+          return;
+        }
         break;
     }
 }
